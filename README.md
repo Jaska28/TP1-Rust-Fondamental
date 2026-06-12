@@ -9,52 +9,71 @@
 6. Display stats
 
 ## Class diagrams
+
 ### Library
-````plantuml
-@startuml
 
-!theme cyborg
-skinparam classAttributeIconSize 0
-
-struct Library {
-    - books: struct book
+```mermaid
+%%{init: {"theme": "dark"}}%%
+classDiagram
+class Library {
+    <<Struct>>
+    -Vec~Livre~ books
 }
 
-
-@enduml
-````
+Library "1" *-- "0..*" Livre : contient
+```
 
 ### Book
-````plantuml
-@startuml
 
-!theme cyborg     
-skinparam classAttributeIconSize 0 
-
-struct Livre {
-  - titre: String
-  - auteur: String
-  - annee_publication: u16
-  - nombre_pages: u32
-  - genre: Genre
-  - statut: Statut
+```mermaid
+%%{init: {"theme": "dark"}}%%
+classDiagram
+class Livre {
+    <<Struct>>
+    -String titre
+    -String auteur
+    -u16 annee_publication
+    -u32 nombre_pages
+    -Genre genre
+    -Statut statut
 }
 
-enum Genre {
-  Roman
-  Science
-  Informatique
-  Biographie
-  Autre
+class Genre {
+    <<Enumeration>>
+    Roman
+    Science
+    Informatique
+    Biographie
+    Autre
 }
 
-enum Statut {
-  Disponible
-  Emprunte
+class Statut {
+    <<Enumeration>>
+    Disponible
+    Emprunte
 }
 
-Livre --> Genre : possède
-Livre --> Statut : possède
+Livre --> Genre : possede
+Livre --> Statut : possede
+```
 
-@enduml
-````
+### Trait Rust
+
+Un trait Rust se represente comme une interface avec une relation de
+realisation :
+
+```mermaid
+%%{init: {"theme": "dark"}}%%
+classDiagram
+class Empruntable {
+    <<Trait>>
+    +emprunter() Result
+    +retourner()
+}
+
+class Livre {
+    <<Struct>>
+}
+
+Livre ..|> Empruntable : implemente
+```

@@ -34,7 +34,7 @@ class Library {
 Library "1" *-- "0..*" Book : contains
 class Book {
     <<Struct>>
-    -i32 id
+    -u16 id
     -String title
     -String author
     -u16 publication_year
@@ -75,3 +75,20 @@ flowchart TD
     Execute --> DisplayMenu
     ExitChoice -- Yes --> End([End])
 ```
+---
+# Difficulties
+One important difficulty in this project was deciding how to transfer the data collected in the menu prompts to the library logic when creating a new book.
+
+At first, I was not sure if `prompt_book()` should directly create and return a `Book`, or if it should only return raw user input that would later be transformed into a `Book` inside `Library`.
+
+This created a design problem with visibility and responsibilities:
+- if `prompt_book()` returns a `Book`, then the constructor must be accessible from outside the `library` module;
+- if the constructor stays private, then I need an intermediate structure to carry the data from the menu to the library;
+- I also wanted to avoid passing too many separate parameters between functions.
+
+For now, I decided to make the constructor public in order to keep the project simpler and easier to continue. This solution is less strict in terms of encapsulation, but it makes the flow easier to understand:
+- the menu collects the information;
+- a `Book` can be created directly from that input;
+- the `Library` remains responsible for storing books in its collection with `push`.
+
+Later, a possible improvement would be to keep the constructor private and introduce a command or input structure dedicated to book creation.

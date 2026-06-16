@@ -92,3 +92,5 @@ For now, I decided to make the constructor public in order to keep the project s
 - the `Library` remains responsible for storing books in its collection with `push`.
 
 Later, a possible improvement would be to keep the constructor private and introduce a command or input structure dedicated to book creation.
+
+Also, the memory management of the `Vec<Book>` collection in `Library` was a bit tricky at first, especially when it came to borrowing and returning books. I had to ensure that the status of each book was correctly updated without causing ownership issues or borrowing conflicts in Rust.

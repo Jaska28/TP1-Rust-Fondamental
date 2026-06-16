@@ -4,6 +4,8 @@ mod menu;
 use crate::library::Library;
 use crate::menu::{UserChoices, display_books, display_menu, get_user_choice, prompt_book};
 
+// TODO - Check if there is slice I could replace in parameters instead of Vec<Book> and Vec<&Book> in the library struct and display_books function.
+
 fn main() {
     let mut library = Library::new(Vec::new());
 

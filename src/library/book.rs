@@ -1,4 +1,6 @@
-/// Represents a book stored in the library.
+use std::fmt;
+
+/// Represents a book in the library.
 pub struct Book {
     id: u16,
     title: String,
@@ -60,5 +62,23 @@ impl Book {
     // Setter
     pub fn set_status(&mut self, status: Status) {
         self.status = status;
+    }
+}
+
+// To be able to display the enum
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let status_str = match self {
+            Status::Available => "Disponible",
+            Status::Borrowed => "Emprunté",
+        };
+        write!(f, "{}", status_str)
+    }
+}
+
+// Similar of __str__ (Python) method for display purposes
+impl fmt::Display for Book {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[{}] {} - {}", self.id(), self.title(), self.status,)
     }
 }

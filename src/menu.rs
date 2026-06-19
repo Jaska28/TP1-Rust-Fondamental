@@ -1,6 +1,6 @@
 use crate::library::{Book, Genre, Status};
 use std::io::stdin;
-
+// TODO - Check a way to implement the result in the user input read_line
 pub(crate) enum UserChoices {
     AddBook,
     DisplayBooks,
@@ -12,6 +12,7 @@ pub(crate) enum UserChoices {
 }
 
 pub(crate) fn display_menu() {
+    // Check the method r# # ?
     const FILTER_SELECTION: &str = "Entrer un nombre entre 1 et 6 pour sélectionner une option.\
         \n1. Ajouter un livre\
         \n2. Afficher les livres\

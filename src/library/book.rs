@@ -59,6 +59,10 @@ impl Book {
         &self.status
     }
 
+    pub fn page_count(&self) -> u16 {
+        self.page_count
+    }
+
     // Setter
     pub fn set_status(&mut self, status: Status) {
         self.status = status;

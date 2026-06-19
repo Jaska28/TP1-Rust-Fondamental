@@ -1,5 +1,5 @@
 mod book;
-use crate::library::BorrowError::AlreadyBorrowed;
+use crate::library::LibraryError::{AlreadyAvailable, AlreadyBorrowed};
 pub use book::{Book, Genre, Status};
 
 pub(crate) struct Library {
@@ -7,8 +7,9 @@ pub(crate) struct Library {
 }
 
 #[derive(Debug)]
-pub enum BorrowError {
+pub enum LibraryError {
     BookNotFound,
+    AlreadyAvailable,
     AlreadyBorrowed,
 }
 
@@ -54,12 +55,13 @@ impl Library {
     /// # Returns
     /// A result containing a reference to the borrowed book if successful, or a `BorrowError` if
     /// the book is not found or already borrowed.
-    pub(crate) fn borrow_book(&mut self, id: u16) -> Result<&Book, BorrowError> {
+    pub(crate) fn borrow_book(&mut self, id: u16) -> Result<&Book, LibraryError> {
+        // TODO - A function to search a book to reuse.
         let book_to_borrow: &mut Book = self
             .books
             .iter_mut()
             .find(|book| book.id() == id)
-            .ok_or(BorrowError::BookNotFound)?;
+            .ok_or(LibraryError::BookNotFound)?;
 
         match book_to_borrow.status() {
             Status::Available => {
@@ -76,27 +78,46 @@ impl Library {
     /// # Arguments
     /// * `id` - The ID of the book to return.
     /// # Returns
-    /// `true` if the book was successfully returned, or `false` if the book was not found
-    /// or was not borrowed.
-    pub(crate) fn return_book(&mut self, id: u16) -> bool {
-        let result = self
+    /// A result containing a reference to the returned book if successful, or a `ReturnError`
+    /// if the book is not found or was not borrowed.
+    pub(crate) fn return_book(&mut self, id: u16) -> Result<&Book, LibraryError> {
+        let book_to_return = self
             .books
             .iter_mut()
-            .find(|book| book.id() == id);
-
-        let book_to_return = match result {
-            Some(book) => book,
-            None => return false,
-        };
+            .find(|book| book.id() == id)
+            .ok_or(LibraryError::BookNotFound)?;
 
         match book_to_return.status() {
             Status::Borrowed => {
                 book_to_return.set_status(Status::Available);
-                true
+                Ok(book_to_return)
             }
-            Status::Available => false, // Book was not borrowed
+            Status::Available => Err(AlreadyAvailable),
         }
     }
 
-    //fn display_stats() -> (usize, usize) {}
+    /// Get statistics about the library, including the total number of books, total pages,
+    /// mean pages per book, total available books and total borrowed books.
+    /// # Returns
+    /// A tuple of u16 containing the total number of books, total pages, mean pages per book,
+    /// total available books and total borrowed books.
+
+    // Normally, I would return an enum, but for the TP I had to return a tuple.
+    pub(crate) fn get_stats(&self) -> (u16, u16, u16, u16, u16) {
+        let total_books = self.books().len() as u16;
+        let total_pages = self.books().iter().map(|book| book.page_count()).sum();
+        let means_pages = total_pages / total_books;
+        let total_available_books = self
+            .books()
+            .iter()
+            .filter(|book| matches!(book.status(), &Status::Available))
+            .count() as u16;
+        let total_borrowed_books = self
+            .books()
+            .iter()
+            .filter(|book|matches!(book.status(), &Status::Borrowed))
+            .count() as u16;
+
+        (total_books, total_pages, means_pages, total_available_books,total_borrowed_books)
+    }
 }

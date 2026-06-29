@@ -30,9 +30,11 @@ fn main() {
                 display_searched_books(&books_found);
             }
 
-            UserChoices::BorrowBook => display_borrow_result(library.borrow_book(prompt_book_id())),
+            UserChoices::BorrowBook => display_borrow_result(library
+                .borrow_book(prompt_book_id())),
 
-            UserChoices::ReturnBook => display_return_result(library.return_book(prompt_book_id())),
+            UserChoices::ReturnBook => display_return_result(library
+                .return_book(prompt_book_id())),
 
             UserChoices::DisplayStats => {
                 let (
@@ -40,7 +42,7 @@ fn main() {
                     total_pages,
                     mean_pages,
                     total_available_books,
-                    total_available_pages,
+                    total_borrowed_books,
                 ) = library.get_stats();
 
                 display_stats(
@@ -48,7 +50,7 @@ fn main() {
                     total_pages,
                     mean_pages,
                     total_available_books,
-                    total_available_pages,
+                    total_borrowed_books,
                 );
             }
 
